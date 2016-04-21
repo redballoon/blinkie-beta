@@ -1,47 +1,72 @@
 var leds = require("rpi-ws2801");
+var options = {
+	debug : true,
+	ledTotal : 160,
+	chaser : {
+		interval : 5,
+		timer : null,
+		current : 0
+	}
+};
 
+var methods = {
+	animations : {
+		chaser : function (color, callback) {
+			if (options.debug) console.log('chaser:');
+			
+			var blank = [0, 0, 0];
+			
+			leds.clear();
+			options.chaser.current = 0;
+			options.chaser.timer = setInterval(function () {
+				if (options.chaser.current >= options.ledTotal) {
+					if (options.debug) console.log('chaser: end of the line.');
+					
+					clearInterval(options.chaser.timer);
+					leds.setColor(options.ledTotal - 1, blank);
+					if (typeof callback === 'function') callback();
+					return;
+				}
+				for (var i = 0; i < options.ledTotal; i++){
+					if (options.chaser.current === i) {
+						leds.setColor(i, color);
+					} else {
+						leds.setColor(i, blank);
+					}
+				}
+				// push forward
+				options.chaser.current++;
+			}, options.chaser.interval);
+		}
+	},
+	setColor : function (index, color) {
+		// to allow multiple colors we won't reset the buffer
+		var colors = leds.getRGBArray(color[0], color[1], color[2]);
+		
+	},
+	init : function () {
+		if (options.debug) console.log('init:');
+		
+		leds.connect(options.ledTotal);
+		
+		leds.clear();
+	}
+};
 
 process.on( 'SIGINT', function() {
-  console.log( "\nshutting down from (Ctrl-C)" )
-  // clear LED stripe and close conection to SPI
-  leds.clear(); 
-  leds.disconnect();
-  process.exit( )
+	// to-do: look for timers and end them
+	console.log( "\nshutting down from (Ctrl-C)" )
+	// clear LED stripe and close conection to SPI
+	leds.clear();
+	leds.disconnect();
+	process.exit()
 })
 
-leds.connect(160);
-leds.clear();
-leds.fill(0, 0, 255);
 
-setTimeout(function () {
-	console.log('timeout');
-	//leds.setRGB(0, '#FF0000');
-	//leds.setRGB(0, [255, 0, 0]);
-	//leds.setRGB(159, '#FF0000');
-	//leds.update();
-	
-	var index = 1;
-	var colors = leds.getRGBArray(255, 0, 0);
-	var blank = leds.getRGBArray(0, 0, 0);
-	var total = leds.getChannelCount();
-	var colorBuffer = new Buffer(total);
-	for (var i = 0; i < total; i += 3){
-		if (index * 3 === i) {
-			colorBuffer[i + 0] = colors[0];
-			colorBuffer[i + 1] = colors[1];
-			colorBuffer[i + 2] = colors[2];
-		} else {
-			colorBuffer[i + 0] = blank[0];
-			colorBuffer[i + 1] = blank[1];
-			colorBuffer[i + 2] = blank[2];
-		}
-		
-	}
-	leds.sendRgbBuffer(colorBuffer);
-}, 2000);
+methods.init();
 
-
-setTimeout(function () {
+methods.animations.chaser([0, 0, 255], function () {
+	if (options.debug) console.log('chaser animation completed.');
 	leds.clear(); 
 	leds.disconnect();
-}, 8000);
+});
