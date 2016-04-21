@@ -34,6 +34,7 @@ var methods = {
 						leds.setColor(i, blank);
 					}
 				}
+				leds.update();
 				// push forward
 				options.chaser.current++;
 			}, options.chaser.interval);
@@ -65,8 +66,11 @@ process.on( 'SIGINT', function() {
 
 methods.init();
 
-methods.animations.chaser([0, 0, 255], function () {
-	if (options.debug) console.log('chaser animation completed.');
-	leds.clear(); 
-	leds.disconnect();
-});
+setTimeout(function () {
+	if (options.debug) console.log('chaser test will start in 2 seconds...');
+	methods.animations.chaser([0, 0, 255], function () {
+		if (options.debug) console.log('chaser animation completed.');
+		leds.clear(); 
+		leds.disconnect();
+	});
+}, 2000);
