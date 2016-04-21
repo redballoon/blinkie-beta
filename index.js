@@ -40,11 +40,6 @@ var methods = {
 			}, options.chaser.interval);
 		}
 	},
-	setColor : function (index, color) {
-		// to allow multiple colors we won't reset the buffer
-		var colors = leds.getRGBArray(color[0], color[1], color[2]);
-		
-	},
 	init : function () {
 		if (options.debug) console.log('init:');
 		
