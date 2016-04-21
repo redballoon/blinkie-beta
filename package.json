@@ -1,0 +1,22 @@
+{
+  "name": "blinkie",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/firefall/blinkie.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/firefall/blinkie/issues"
+  },
+  "homepage": "https://gitlab.com/firefall/blinkie#README",
+  "dependencies": {
+    "rpi-ws2801": "0.0.4"
+  }
+}
