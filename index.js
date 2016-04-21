@@ -19,3 +19,9 @@ setTimeout(function () {
 	leds.setRGB(159, '#FF0000');
 	leds.update();
 }, 5000);
+
+
+setTimeout(function () {
+	leds.clear(); 
+	leds.disconnect();
+}, 10000);
