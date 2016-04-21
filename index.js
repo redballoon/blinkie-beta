@@ -66,11 +66,11 @@ process.on( 'SIGINT', function() {
 
 methods.init();
 
+if (options.debug) console.log('chaser test will start in 3 seconds...');
 setTimeout(function () {
-	if (options.debug) console.log('chaser test will start in 2 seconds...');
 	methods.animations.chaser([0, 0, 255], function () {
 		if (options.debug) console.log('chaser animation completed.');
 		leds.clear(); 
 		leds.disconnect();
 	});
-}, 2000);
+}, 3000);
