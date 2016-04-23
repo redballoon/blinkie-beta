@@ -1,7 +1,13 @@
-var leds = require("rpi-ws2801");
+var path = require('path');
+var leds = require('rpi-ws2801');
+var translate = require('translate.js');
 var options = {
 	debug : true,
 	ledTotal : 160,
+	ticker : {
+		timer : null,
+		interval : 5
+	},
 	chaser : {
 		interval : 5,
 		timer : null,
@@ -10,38 +16,61 @@ var options = {
 };
 
 var methods = {
+	log : function () {
+		if (!options.debug) return;
+		Array.prototype.splice.call(arguments, 0, 0, path.basename(__filename) + ':');
+		console.log.apply(null, arguments);
+	},
+	close : function () {
+		leds.clear();
+		leds.disconnect();
+	},
 	animations : {
-		chaser : function (color, callback) {
-			if (options.debug) console.log('chaser:');
+		chaser : function (data, callback) {
+			'strict';
 			
-			var blank = [0, 0, 0];
+			methods.log('chaser:');
+			
+			for (let i = 0; i < data.length; i++){
+				leds.setColor(i, data[i]);
+			}
+			
+			leds.update();
+		}
+	},
+	fromImage : function (path, callback) {
+		'strict';
+		
+		methods.log('fromImage:', path);
+		
+		translate.process(path, function (results) {
+			
+			if (!results) {
+				methods.log('fromImage: error.');
+				methods.close();
+				return false;
+			}
 			
 			leds.clear();
-			options.chaser.current = 0;
-			options.chaser.timer = setInterval(function () {
-				if (options.chaser.current >= options.ledTotal) {
-					if (options.debug) console.log('chaser: end of the line.');
+			
+			options.ticker.timer = setInterval(function () {
+				if (!results.length) {
+					methods.log('fromImage: end of the line.');
 					
-					clearInterval(options.chaser.timer);
-					leds.setColor(options.ledTotal - 1, blank);
+					clearInterval(options.ticker.timer);
 					if (typeof callback === 'function') callback();
 					return;
 				}
-				for (var i = 0; i < options.ledTotal; i++){
-					if (options.chaser.current === i) {
-						leds.setColor(i, color);
-					} else {
-						leds.setColor(i, blank);
-					}
-				}
-				leds.update();
-				// push forward
-				options.chaser.current++;
-			}, options.chaser.interval);
-		}
+				
+				let row = results.shift();
+				methods.animations.chaser(row);
+				
+			}, options.ticker.interval);
+			
+		});
 	},
 	init : function () {
-		if (options.debug) console.log('init:');
+		methods.log('init:');
 		
 		leds.connect(options.ledTotal);
 		
@@ -51,21 +80,25 @@ var methods = {
 
 process.on( 'SIGINT', function() {
 	// to-do: look for timers and end them
-	console.log( "\nshutting down from (Ctrl-C)" )
+	console.log( "\nshutting down from (Ctrl-C)" );
 	// clear LED stripe and close conection to SPI
-	leds.clear();
-	leds.disconnect();
-	process.exit()
-})
+	methods.close();
+	process.exit();
+});
 
 
 methods.init();
 
-if (options.debug) console.log('chaser test will start in 3 seconds...');
+methods.log('chaser test will start in 3 seconds...');
 setTimeout(function () {
+	/*
 	methods.animations.chaser([0, 0, 255], function () {
-		if (options.debug) console.log('chaser animation completed.');
+		methods.log('chaser animation completed.');
 		leds.clear(); 
 		leds.disconnect();
 	});
-}, 3000);
+	*/
+	methods.fromImage('./assets/chaser-red.gif', function () {
+		methods.close();
+	});
+}, 5000);
