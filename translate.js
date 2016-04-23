@@ -23,17 +23,17 @@ var methods = {
 		methods.log('handlePixels: width:', pixels.shape[1]);
 		methods.log('handlePixels: height:', pixels.shape[2]);
 		
-		let results = [];
+		var results = [];
 		// frames
-		for (let i = 0; i < pixels.shape[0]; i++) {
-			let frame = [];
+		for (var i = 0; i < pixels.shape[0]; i++) {
+			var frame = [];
 			
 			// width
-			for (let j = 0; j < pixels.shape[1]; j++) {
+			for (var j = 0; j < pixels.shape[1]; j++) {
 				// height
-				for (let k = 0; k < pixels.shape[2]; k++) {
-					let color = [];
-					for (let l = 0; l < pixels.shape[3] - 1; l++) {
+				for (var k = 0; k < pixels.shape[2]; k++) {
+					var color = [];
+					for (var l = 0; l < pixels.shape[3] - 1; l++) {
 						color.push(pixels.get(i, j, k, l));
 					}
 					

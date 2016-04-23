@@ -31,7 +31,7 @@ var methods = {
 			
 			methods.log('chaser:');
 			
-			for (let i = 0; i < data.length; i++){
+			for (var i = 0; i < data.length; i++){
 				leds.setColor(i, data[i]);
 			}
 			
@@ -62,7 +62,7 @@ var methods = {
 					return;
 				}
 				
-				let row = results.shift();
+				var row = results.shift();
 				methods.animations.chaser(row);
 				
 			}, options.ticker.interval);
