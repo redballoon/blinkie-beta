@@ -61,7 +61,7 @@ var methods = {
 	process : function (path, callback) {
 		methods.log('process:', path);
 		
-		getPixels(path, function (errors, pixels) {
+		getPixels(path, function (error, pixels) {
 			if (error) {
 				methods.log('process: an error occurred.', error);
 				if (typeof callback === 'function') callback(false);
@@ -72,8 +72,6 @@ var methods = {
 	}
 };
 
-module.exports = function () {
-	return {
-		process : methods.process
-	};
+module.exports = {
+	process : methods.process
 };

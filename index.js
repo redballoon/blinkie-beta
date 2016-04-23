@@ -1,6 +1,6 @@
 var path = require('path');
 var leds = require('rpi-ws2801');
-var translate = require('translate.js');
+var translate = require('./translate');
 var options = {
 	debug : true,
 	ledTotal : 160,
@@ -89,7 +89,7 @@ process.on( 'SIGINT', function() {
 
 methods.init();
 
-methods.log('chaser test will start in 3 seconds...');
+methods.log('chaser test will start in 5 seconds...');
 setTimeout(function () {
 	/*
 	methods.animations.chaser([0, 0, 255], function () {
