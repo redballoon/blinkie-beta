@@ -18,6 +18,7 @@
   "homepage": "https://gitlab.com/firefall/blinkie#README",
   "dependencies": {
     "get-pixels": "^3.3.0",
+    "md5": "^2.1.0",
     "rpi-ws2801": "0.0.4"
   }
 }

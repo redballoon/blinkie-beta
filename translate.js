@@ -1,3 +1,6 @@
+// jshint elision: true, strict:true, curly:false
+'use strict';
+
 var path = require('path');
 var getPixels = require('get-pixels');
 
