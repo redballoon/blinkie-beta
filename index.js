@@ -56,14 +56,17 @@ var methods = {
 			options.ticker.timer = setInterval(function () {
 				if (!results.length) {
 					methods.log('fromImage: end of the line.');
-					
 					clearInterval(options.ticker.timer);
 					if (typeof callback === 'function') callback();
 					return;
 				}
 				
-				var row = results.shift();
-				methods.animations.chaser(row);
+				var data = results.shift();
+				for (var i = 0; i < data.length; i++){
+					leds.setColor(i, data[i]);
+				}
+				
+				leds.update();
 				
 			}, options.ticker.interval);
 			
