@@ -44,10 +44,22 @@ var methods = {
 			callback(data);
 		});
 	},
-	read : function () {
+	read : function (path, callback) {
 		'strict';
 		
-		methods.log('read:');
+		methods.log('read:', path);
+		
+		fs.readFile(path, function (error, data) {
+			if (error) {
+				methods.log('read: failed to read file.', error);
+				if (typeof callback === 'function') callback(false);
+				return;
+			}
+			
+			methods.log('read: done.');
+			
+			callback(data);
+		});
 	},
 	cache : function (url, path, callback) {
 		'strict';
@@ -105,7 +117,7 @@ var methods = {
 				
 			// file exist, use cached data
 			} else {
-				
+				methods.read(path, callback);
 			}
 		});
 	},
